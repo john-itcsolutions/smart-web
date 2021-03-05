@@ -89,7 +89,7 @@ Starting from the first (base) layer we need:
 
 Refer to https://discourse.charmhub.io/t/charm-tools/1180 for details of "charm tools" commands. Note also that each interface or layer is documented on its own repo site.
 
-We have begun to assemble the code in metadata.yaml, layer.yaml, and smart_web.py (the so-called reactive code in Python). One also needs to git clone the repo's above (12 in all) in the list of layers above. These must be cloned into the "layers" and "interfaces" directories under "smart-web/".
+We have begun to assemble the code in metadata.yaml, layer.yaml, and smart_web.py (the so-called reactive code in Python). Aside from cloning this repo (`git clone https://github.com/john-itcsolutions/smart-web.git`), one also needs to git clone the repo's above (12 in all) in the list of layers above. These must be cloned into the "layers" and "interfaces" directories under "smart-web/".
 
 # TO BE CONTINUED .. we're learning to use Docker to build charms now ..
 
