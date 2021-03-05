@@ -1,4 +1,5 @@
 name: smart-web
+display-name: smart-web
 summary: Server to access blockchains and database
 maintainer: John Olsen <john@itcsolutions.com.au
 description: |
@@ -8,9 +9,6 @@ tags:
   # https://jujucharms.com/docs/stable/authors-charm-metadata
   - web_server
 subordinate: false
-options:
-  tls-client:
-    ca_certificate_path: /etc/ssl/smart-web-service/ca.crt
 resources:
   smart:
     type: oci-image
@@ -19,6 +17,10 @@ resources:
 series:
   - bionic
 requires:
+  dockerhost:
+    interface: dockerhost
+  docker-image-host:
+    interface: docker-image-host
   redis:
     interface: redis
   cert-provider:
@@ -30,6 +32,10 @@ requires:
 provides:  # Endpoint role
   website:  # Endpoint name
     interface: http  # Interface name
+  dockerhost:
+    interface: dockerhost
+  docker-image-host:
+    interface: docker-image-host
   db:
     interface: etcd
   proxy:
@@ -41,7 +47,7 @@ peers:
     interface: etcd
   peer-relations:
     interface: docker
-series:
-- focal
-subordinate: !!bool false
+options:
+  tls-client:
+    ca_certificate_path: /etc/ssl/myservice/ca.crt
   
