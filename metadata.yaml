@@ -8,11 +8,21 @@ tags:
   # https://jujucharms.com/docs/stable/authors-charm-metadata
   - web_server
 subordinate: false
+options:
+  tls-client:
+    ca_certificate_path: /etc/ssl/smart-web-service/ca.crt
+resources:
+  smart:
+    type: oci-image
+    auto-fetch: true
+    description: "The image for this charm"
 requires:
   cert-provider:
     interface: tls-certificates
   postgres:  # Endpoint name
     interface: pgsql  # Interface name
+  docker-registry:
+    interface: docker-registry
 provides:  # Endpoint role
     website:  # Endpoint name
         interface: https  # Interface name
