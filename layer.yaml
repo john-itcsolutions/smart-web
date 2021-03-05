@@ -1,0 +1,16 @@
+includes: 
+  - layer:basic
+  - layer:docker
+  - layer:docker-resource
+  - layer:tls
+  - layer:tls-client
+  - interface:tls-certificates
+  - interface:tls
+  - interface:etcd
+  - interface:pgsql
+  - interface:docker-image-host
+  - interface:docker-registry
+  - interface:dockerhost
+  - interface:redis
+  - interface:http
+repo: https://github.com/john-itcsolutions/smart-web.git

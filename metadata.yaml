@@ -1,0 +1,21 @@
+name: smart-web
+summary: Server to access blockchains and database
+maintainer: John Olsen <john@itcsolutions.com.au
+description: |
+  Multi-line description here
+tags:
+  # Replace "misc" with one or more whitelisted tags from this list:
+  # https://jujucharms.com/docs/stable/authors-charm-metadata
+  - web_server
+subordinate: false
+requires:
+  cert-provider:
+    interface: tls-certificates
+  postgres:  # Endpoint name
+    interface: pgsql  # Interface name
+provides:  # Endpoint role
+    website:  # Endpoint name
+        interface: https  # Interface name
+peers:
+  peer-relation:
+    interface: docker
