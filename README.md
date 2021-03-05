@@ -1,5 +1,10 @@
 ## SMART-WEB - a Docker charm for the elastos-smartweb-service:
 
+## This charm is being designed and built to enable the elastos-smartweb-service to serve a connection to Elastos Blockchains, and to ITCSA's database ("house"). The entire repository may be considered as part of the cheirrs project at:
+
+https://github.com/john-itcsolutions/cheirrs
+
+
 ## The way forward:
 
 We know that we must build a "smart-web" charm, rather than simply using kubectl to deploy the software, as was done in our smart-web-postgresql-grpc repo. Otherwise we would have no simple mechanisms for smart-web to find, connect and synchronise with its environment.
