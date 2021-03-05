@@ -149,6 +149,22 @@ def install_smart_web():
         smart-web.update_client_cert(client_cert.cert, client_cert.key)
         clear_flag('cert-provider.certs.changed')
 
+    @when('certificates.available')
+    def send_data(tls):
+        '''Send the data that is required to create a server certificate for
+        this server.'''
+        # Use the public ip of this unit as the Common Name for the certificate.
+        common_name = hookenv.unit_public_ip()
+        # Get a list of Subject Alt Names for the certificate.
+        sans = []
+        sans.append(hookenv.unit_public_ip())
+        sans.append(hookenv.unit_private_ip())
+        sans.append(socket.gethostname())
+        layer.tls_client.request_server_cert(common_name, sans,
+                                            crt_path='/etc/certs/server.crt',
+                                            key_path='/etc/certs/server.key')
+                                            
+
     @when('endpoint.docker-registry.ready')
     def registry_ready():
         registry = endpoint_from_flag('endpoint.docker-registry.ready')

@@ -16,7 +16,11 @@ resources:
     type: oci-image
     auto-fetch: true
     description: "The image for this charm"
+series:
+  - bionic
 requires:
+  redis:
+    interface: redis
   cert-provider:
     interface: tls-certificates
   postgres:  # Endpoint name
@@ -24,8 +28,20 @@ requires:
   docker-registry:
     interface: docker-registry
 provides:  # Endpoint role
-    website:  # Endpoint name
-        interface: https  # Interface name
+  website:  # Endpoint name
+    interface: http  # Interface name
+  db:
+    interface: etcd
+  proxy:
+    interface: etcd-proxy
 peers:
-  peer-relation:
+  certificates:
+    interface: tls
+  cluster:
+    interface: etcd
+  peer-relations:
     interface: docker
+series:
+- focal
+subordinate: !!bool false
+  
