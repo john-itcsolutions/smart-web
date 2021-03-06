@@ -1,7 +1,7 @@
 name: smart-web
 display-name: smart-web
 summary: Server to access blockchains and database
-maintainer: John Olsen <john@itcsolutions.com.au
+maintainer: John Olsen <john@itcsolutions.com.au>
 description: |
   Multi-line description here
 tags:
@@ -19,12 +19,8 @@ series:
 requires:
   dockerhost:
     interface: dockerhost
-  docker-image-host:
-    interface: docker-image-host
   redis:
     interface: redis
-  cert-provider:
-    interface: tls-certificates
   postgres:  # Endpoint name
     interface: pgsql  # Interface name
   docker-registry:
@@ -32,22 +28,12 @@ requires:
 provides:  # Endpoint role
   website:  # Endpoint name
     interface: http  # Interface name
-  dockerhost:
-    interface: dockerhost
   docker-image-host:
     interface: docker-image-host
   db:
     interface: etcd
-  proxy:
-    interface: etcd-proxy
 peers:
-  certificates:
-    interface: tls
-  cluster:
-    interface: etcd
   peer-relations:
     interface: docker
-options:
-  tls-client:
-    ca_certificate_path: /etc/ssl/myservice/ca.crt
+
   

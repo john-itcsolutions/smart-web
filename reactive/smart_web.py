@@ -1,14 +1,14 @@
 import pwd
 import os
-import tlslib
+from . import tlslib
 from charms import layer
 from charmhelpers.core import unitdata
-from charmhelpers.core import hookenv, host
-from charmhelpers.core.reactive import hook
-from charmhelpers.core.reactive import when
-from charmhelpers.core.reactive import when_file_changed
-from charmhelpers.core.reactive import set_state
-from charmhelpers.core.reactive import remove_state
+from charmhelpers.core import host, hookenv, templating
+from charms.reactive import hook
+from charms.reactive import when
+from charms.reactive import when_file_changed
+from charms.reactive import set_state
+from charms.reactive import remove_state
 from charmhelpers.core.hookenv import status_set
 from charmhelpers.core.templating import render
 from charms.reactive import when_not, set_flag
@@ -71,49 +71,20 @@ def install_smart_web():
 
     @when('config.changed')
     def check_admin_pass():
-        admin_pass = hookenv.config()['localhost']
+        admin_pass = hookenv.config()['admin-pass']
         if admin_pass:
-            set_state('localhost')
+            set_state('admin-pass')
         else:
-            remove_state('localhost')
+            remove_state('admin-pass')
 
-    @when('db.master.available', 'localhost')
+    @when('db.master.available', 'admin-pass')
     def render_config(pgsql):
         render_template('app-config.j2', '/etc/app.conf', {
             'db_conn': pgsql.master,
-            'admin_pass': hookenv.config('localhost'),
+            'admin_pass': hookenv.config('admin-pass'),
         })
 
-    @when_file_changed('/etc/app.conf')
-    def restart_service():
-        hookenv.service_restart('smart-web')
-
-    @when('layer.docker-resource.smart.available')
-    @when_not('charm.smart-web.started')
-    def start_container():
-        layer.status.maintenance('configuring container')
-        image_info = layer.docker-resource.get_info('smart')
-        layer.caas_base.pod_spec_set({
-            'containers': [
-                {
-                    'name': 'smart-web-service',
-                    'imageDetails': {
-                        'imagePath': image_info.registry_path,
-                        'username': image_info.username,
-                        'password': image_info.password,
-                    },
-                    'ports': [
-                        {
-                            'name': 'service',
-                            'containerPort': 80,
-                        },
-                    ],
-                },
-            ],
-        })
-        layer.status.maintenance('creating container')
-
-
+    
     @when('cert-provider.ca.changed')
     def install_root_ca_cert():
         cert_provider = endpoint_from_flag('cert-provider.ca.available')
@@ -163,7 +134,15 @@ def install_smart_web():
         layer.tls_client.request_server_cert(common_name, sans,
                                             crt_path='/etc/certs/server.crt',
                                             key_path='/etc/certs/server.key')
-                                            
+
+    @when('certificates.server.cert.available')
+    def store_server(tls):
+        '''Read the server certificate from the relation object and install it on
+        this system.'''
+        server_cert, server_key = tls.get_server_cert()
+        write_file('/home/ubuntu/server.cert', server_cert)
+        write_file('/home/ubuntu/server.key', server_key)
+
 
     @when('endpoint.docker-registry.ready')
     def registry_ready():
@@ -178,12 +157,43 @@ def install_smart_web():
         image = start_downloading_image()
         relation.send_configuration(image, 'smart')
 
-    @when_all('image.available')
+    @when('image.available')
     def run_images(relation):
         images = relation.images
         if images:
             for image in images:
                 run_image(image)
+
+    @when('layer.docker-resource.smart.available')
+    @when_not('charm.smart-web.started')
+    def start_container():
+        layer.status.maintenance('configuring container')
+        image_info = layer.docker-resource.get_info('smart')
+        layer.caas_base.pod_spec_set({
+            'containers': [
+                {
+                    'name': 'smart',
+                    'imageDetails': {
+                        'imagePath': image_info.registry_path,
+                        'username': image_info.username,
+                        'password': image_info.password,
+                    },
+                    'ports': [
+                        {
+                            'name': 'service',
+                            'containerPort': 80,
+                        },
+                    ],
+                },
+            ],
+        })
+        layer.status.maintenance('creating container')
+
+
+    @when_file_changed('/etc/app.conf')
+    def restart_service():
+        hookenv.service_restart('smart-web')
+
 
     @when('reverseproxy.available')
     def update_reverse_proxy_config(reverseproxy):
@@ -213,5 +223,5 @@ def install_smart_web():
         #
         #  * https://jujucharms.com/docs/devel/developer-getting-started
         #  * https://github.com/juju-solutions/layer-basic#overview
-    *
+    
     set_flag('smart-web.installed')

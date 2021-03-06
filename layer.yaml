@@ -1,9 +1,6 @@
 includes: 
   - layer:docker-resource
-  - layer:tls
   - layer:tls-client
-  - interface:tls-certificates
-  - interface:tls
   - interface:http
   - interface:etcd
   - interface:pgsql
