@@ -17,7 +17,7 @@ resources:
 series:
   - bionic
 requires:
-  dockerhost:
+  docker-host:
     interface: dockerhost
   redis:
     interface: redis

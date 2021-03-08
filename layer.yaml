@@ -1,4 +1,6 @@
 includes: 
+  - layer:basic
+  - layer:docker
   - layer:docker-resource
   - layer:tls-client
   - interface:http
