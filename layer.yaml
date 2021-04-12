@@ -9,5 +9,4 @@ includes:
   - interface:docker-image-host
   - interface:docker-registry
   - interface:dockerhost
-  - interface:redis
 repo: https://github.com/john-itcsolutions/smart-web.git

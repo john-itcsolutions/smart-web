@@ -1,5 +1,5 @@
-name: smart-web
-display-name: smart-web
+name: smart-web-alt
+display-name: smart-web-alt
 summary: Server to access blockchains and database
 maintainer: John Olsen <john@itcsolutions.com.au>
 description: |
@@ -10,7 +10,7 @@ tags:
   - web_server
 subordinate: false
 resources:
-  smart:
+  smart-alt:
     type: oci-image
     auto-fetch: true
     description: "The image for this charm"
@@ -19,8 +19,8 @@ series:
 requires:
   docker-host:
     interface: dockerhost
-  redis:
-    interface: redis
+  etcd:
+    interface: etcd
   postgres:  # Endpoint name
     interface: pgsql  # Interface name
   docker-registry:
